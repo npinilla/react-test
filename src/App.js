@@ -1,6 +1,11 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import './App.css';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faStar, faTimes } from '@fortawesome/free-solid-svg-icons';
+
+library.add(faStar, faTimes);
 
 const axiosStarWarsGraphQL = axios.create({
   baseURL: 'https://api.graphcms.com/simple/v1/swapi',
@@ -108,14 +113,13 @@ class App extends Component {
   }
 
   addToFavorites = event => {
-    let button = event.target;
+    const buttonId = event.target.getAttribute('data-button-id');
+    const button = document.getElementById(buttonId);
     const index = this.state.favorites.indexOf(button.value)
     if (index == -1){
-      button.innerHTML = "Remove from favorites";
       this.setState(() => (this.state.favorites.push(button.value)));
       return;
     }
-    button.innerHTML = "Add to favorites";
     this.setState(() => (this.state.favorites.splice(index, 1)));
   }
 
@@ -240,28 +244,27 @@ const AllPersons = ({ allPersons, errors, app }) => {
     <div>
       <ul>
         {allPersons.map(person => (
-          <li key={person.id} class='list'>
+          <li key={person.id} className='list'>
             <a onClick={app.getPerson} href={"#" + person.name}>
               {person.name}
             </a>
             <button
               type="button"
-              class="favorite-button"
+              className="favorite-button"
               onClick={app.addToFavorites}
               value={person.name}
               id={"favorite-button-" + person.id}
             >
-              {app.checkIfFavorite(person.name) ? (
-                "Remove from favorites"
-              ) : (
-                "Add to favorites"
-              )}
+              <FavoriteButton
+                isFavorite={app.checkIfFavorite(person.name)}
+                buttonId={"favorite-button-" + person.id}
+              />
             </button>
           </li>
         ))}
       </ul>
     </div>
-  )
+  );
 };
 
 const Person = ({ person, errors }) => {
@@ -291,7 +294,7 @@ const Person = ({ person, errors }) => {
       <List list={person.starships} name='Starships' />
       <Films films={person.films} />
     </div>
-  )
+  );
 };
 
 const ShowFavorites = ({ showFavorites, app }) => {
@@ -310,6 +313,7 @@ const ShowFavorites = ({ showFavorites, app }) => {
   if (app.state.favorites.length == 0){
     return (
       <div>
+        <div className="no-favorites-margin"></div>
         <p>
           <strong>Characters:</strong>
         </p>
@@ -325,7 +329,7 @@ const ShowFavorites = ({ showFavorites, app }) => {
         <strong>Characters:</strong>
       </p>
     </div>
-  )
+  );
 };
 
 const List = ({ list, name }) => {
@@ -337,7 +341,7 @@ const List = ({ list, name }) => {
         </p>
         <ul>
           {list.map(item => (
-            <li key={item.id} class="list">
+            <li key={item.id} className="list">
               {item.name}
             </li>
           ))}
@@ -345,7 +349,7 @@ const List = ({ list, name }) => {
       </div>
     );
   }
-  return (<div></div>)
+  return (<div></div>);
 };
 
 const Films = ({ films }) => (
@@ -355,12 +359,33 @@ const Films = ({ films }) => (
     </p>
     <ul>
       {films.map(film => (
-        <li key={film.id} class="list">
+        <li key={film.id} className="list">
           {film.title}
         </li>
       ))}
     </ul>
   </div>
 );
+
+const FavoriteButton = ({ isFavorite, buttonId }) => {
+  if (isFavorite){
+    return (
+      <div data-button-id={buttonId}>
+        <div className="button-icon-remove">
+          <FontAwesomeIcon icon="times" />
+        </div>
+        {"Remove from favorites"}
+      </div>
+    );
+  }
+  return (
+    <div data-button-id={buttonId}>
+      <div className="button-icon-add">
+        <FontAwesomeIcon icon="star" />
+      </div>
+      Add to favorites
+    </div>
+  );
+};
 
 export default App;

@@ -3,3 +3,16 @@
 
 .favorite-button
   margin-left: 10px
+
+.button-icon-add
+  display: inline-block
+  color: orange
+  margin-right: 5px
+
+.button-icon-remove
+  display: inline-block
+  color: red
+  margin-right: 5px
+
+.no-favorites-margin
+  height: 18px
