@@ -13,5 +13,5 @@
   * npm start
 
 4. Use application in a web browser
-  * Open a web browser (Chrome and Safari were tested)
+  * Open a web browser (Chrome, Safari and Firefox were tested)
   * go to localhost:8080
